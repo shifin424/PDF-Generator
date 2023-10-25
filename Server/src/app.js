@@ -22,6 +22,9 @@ connectDatabase();
 app.use("/api/v1/",userRouter)
 app.use(errorHandler)
 
+app.use(express.static("public"));
+app.use("/pdfFiles", express.static("public/pdfFiles"));
+
 app.use((req,res)=>{
     res.status(400).json({success:false,status:404,message:"Not Found"});
 })

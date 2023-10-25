@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../Components/Button/Button";
+import { message } from 'antd'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { loginSchema } from "../../Validations/LoginValidationSchema";
 import { userLoginApi } from "../../Services/UserServices";
 
 
 const LoginPage = () => {
+
+    const navigate = useNavigate()
 
     const initialValues = {
         email: '',
@@ -14,14 +17,18 @@ const LoginPage = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const responce = await userLoginApi(values)
-            if (responce.status === 200) {
-                console.log("Login successfully")
-            } else {
-                console.log("Authentication failed")
+            const response = await userLoginApi(values)
+            if (response.status === 200) {
+                const token = `Bearer ${response.data.token}`;
+                localStorage.setItem('UserJwtToken', token);
+                navigate('/')
+                message.success("Welcome Back to DocuGenius!")
+            }
+            else {
+                message.error("Network error")
             }
         } catch (err) {
-            console.log(err)
+            message.error(err.response.data.error)
         }
     }
 
@@ -71,7 +78,7 @@ const LoginPage = () => {
                                     <Button
                                         type="submit"
                                         text="Sign in"
-                                        className="w-full text-white items-center font-semibold py-2 px-4 rounded-full shadow-md"
+                                        className="w-full bg-red-400 text-white items-center font-semibold py-2 px-4 rounded-full shadow-md"
                                     />
                                     <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                                         Don't have an account yet?{' '}

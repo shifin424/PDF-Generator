@@ -24,7 +24,7 @@ const SignUpPage = () => {
                 const token = `Bearer ${response.data.token}`;
                 localStorage.setItem('UserJwtToken', token);
                 navigate('/')
-                message.success("Welcome! Your account is ready now")
+                message.success("Signup Completed")
             } else {
                 message.error("Network error")
             }
@@ -97,8 +97,8 @@ const SignUpPage = () => {
                                     </div>
                                     <Button
                                         type="submit"
-                                        text="Sign in"
-                                        className="w-full text-white items-center font-semibold py-2 px-4 rounded-full shadow-md"
+                                        text="Sign Up"
+                                        className="w-full bg-red-400 text-white items-center font-semibold py-2 px-4 rounded-full shadow-md"
                                     />
                                     <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                                         Already Have an Account?{' '}

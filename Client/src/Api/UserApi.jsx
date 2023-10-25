@@ -15,6 +15,7 @@ axiosPublic.interceptors.request.use(
         const token=accesstoken?.token;
         config.headers.Authorization = `Bearer ${token}`;
       }
+      config.headers['Content-Type'] = 'multipart/form-data';
       return config;
     },
     (err) => Promise.reject(err)

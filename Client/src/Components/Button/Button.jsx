@@ -4,7 +4,7 @@ const Button = ({ text, onClick, className }) => {
             <button
             type="submit"
                 onClick={onClick}
-                className={`bg-red-400 text-white px-4 py-1 rounded-lg hover:bg-red-400 transition w-full ${className}`}
+                className={` text-white px-4 py-1 rounded-lg  transition w-full ${className}`}
             >
                 {text}
             </button>

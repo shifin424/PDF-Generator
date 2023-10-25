@@ -7,3 +7,8 @@ export const userLoginApi = (data) => {
 export const userSingUpApi = (data) =>{
     return axiosInstance.post('/sign-up',{data})
 }
+
+export const uploadPdfApi =(data) =>{
+    console.log(data,"in service")
+    return axiosInstance.post('/upload-pdf',{data})
+}
