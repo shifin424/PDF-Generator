@@ -2,14 +2,17 @@ import mongoose from "mongoose";
 
 const pdfSchema = new mongoose.Schema({
 
-    title: {
-        type: String,
-        required: true,
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
     },
-    filename: {
-        type: String,
-        required: true
-    },
+    pdfs: [
+        {
+          title: String,
+          url: String,
+          publicId: String,
+        },
+      ],
     pages: [
         {
             type: mongoose.Schema.Types.ObjectId,

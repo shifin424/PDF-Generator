@@ -4,12 +4,16 @@ import Navbar from '../../Components/NavBar/Navbar';
 import Image from '../../assets/background.png';
 import Modal from '../../Components/Modal/Modal';
 import Gif from '../../assets/gif.gif';
+import { message } from 'antd'
 import { uploadPdfApi } from '../../Services/UserServices';
+import { useNavigate } from 'react-router-dom';
 
 
 const HomePage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const navigate = useNavigate()
 
   const openModal = () => {
     setModalOpen(true);
@@ -29,23 +33,36 @@ const HomePage = () => {
     }
   };
 
+  const headers = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: localStorage.getItem('UserJwtToken'),
+    },
+  };
+
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!selectedFile) {
       alert("Please select a PDF file to upload.");
       return;
     }
-
     try {
       const formData = new FormData();
       formData.append("pdfFile", selectedFile);
 
-      const response = await uploadPdfApi(formData);
-      console.log(response, "front-end response");
+      const response = await uploadPdfApi(formData, headers);
+      if (response.status === 200) {
+        navigate('/')
+        setSelectedFile(null);
+        message.success("PDF Uploaded Sucessfully")
+      } else {
+        message.error("Network error")
+      }
       closeModal();
     } catch (err) {
-      console.log(err);
+      message.error(err.response.data.error)
     }
   };
 
@@ -111,7 +128,7 @@ const HomePage = () => {
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">PDF files only (MAX. 800x400px)</p>
                 </div>
-                <input id="dropzone-file"  type="file" className="hidden" name='pdfFile' accept=".pdf" onChange={handleFileUpload} />
+                <input id="dropzone-file" type="file" className="hidden" name='pdfFile' accept=".pdf" onChange={handleFileUpload} />
               </label>
             </div>
           )}
@@ -123,7 +140,7 @@ const HomePage = () => {
           <div className="flex items-center justify-center w-full space-y-4 md:space-y-0 space-x-4">
             {selectedFile ? (
               <Button
-               onClick={handleSubmit}
+                onClick={handleSubmit}
                 type='submit'
                 className="bg-green-400 mb-5 text-white px-12 py-2 rounded-lg hover:bg-green-500"
                 text="Upload Now"

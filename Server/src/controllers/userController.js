@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail, checkPassword } from "../repositories/userRepository.js";
+import { createUser, findUserByEmail, checkPassword, storePDF, findPDFByTitle } from "../repositories/userRepository.js";
 import ErrorResponse from '../middleware/errors/errorResponse.js';
 import jwt from 'jsonwebtoken';
 
@@ -57,11 +57,24 @@ export const login = async (req, res, next) => {
     }
 }
 
-export const uploadPDF = async (req,res,next) =>{
-    try{
-        console.log(req.body,1)
-        console.log(req.file,2)
-    }catch(err){
-        console.log(err)
+export const uploadPDFFile = async (req, res) => {
+    try {
+        const title = req.file.originalname
+        const userId = req.user.id
+
+        const existingPDF = await findPDFByTitle(userId,title)
+        console.log(existingPDF,"error occuring chance")
+        if (existingPDF) {
+            return res.status(409).json({ error: "PDF with the same filename already exists" });
+        }else{
+            console.log("Its over")
+         const pdfData = req.file;
+        const storedPDF = await storePDF(pdfData,userId);
+        res.status(200).json({ message: "PDF uploaded successfully", pdf: storedPDF });
+        }
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to upload PDF" });
     }
-}
+};

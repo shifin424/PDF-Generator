@@ -41,3 +41,43 @@ export const checkPassword = async (plainPassword, hashedPassword) => {
     throw new Error("Failed to check password");
   }
 }
+
+export const findPDFByTitle = async (userId, title) => {
+  try {
+    const user = await User.findById(userId).populate('uploadedPDFs'); 
+    console.log(user,"userData")
+    if (!user) {
+      throw new Error("User not found");
+    } 
+    const existingPDF = await PDF.findOne({ userId,"pdfs.title": title });
+    console.log(existingPDF,"existingPDF")
+    return existingPDF;
+  } catch (err) {
+    console.log(err)
+    throw new Error("Failed to find PDF by title")
+  }
+}
+
+export const storePDF = async (pdfData, userId) => {
+  try {
+    const { originalname, path, filename } = pdfData
+    const newPDF = new PDF({
+      userId: userId,
+      pdfs: [
+        {
+          title: originalname,
+          url: path,
+          publicId: filename
+        }
+      ]
+    })
+    await newPDF.save();
+    const user = await User.findOne({ _id: userId });
+    user.uploadedPDFs.push(newPDF._id);
+    await user.save();
+    return newPDF;
+  } catch (err) {
+    console.log(err)
+    throw new Error("Failed to store PDF File");
+  }
+}

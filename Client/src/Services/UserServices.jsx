@@ -1,14 +1,14 @@
-import axiosInstance from "../API/UserApi"
+import axios from "../Api/UserApi"
 
 export const userLoginApi = (data) => {
-    return axiosInstance.post('/login', { data })
+    return axios.post('/login', { data })
 }
 
 export const userSingUpApi = (data) =>{
-    return axiosInstance.post('/sign-up',{data})
+    return axios.post('/sign-up',{data})
 }
 
-export const uploadPdfApi =(data) =>{
-    console.log(data,"in service")
-    return axiosInstance.post('/upload-pdf',{data})
+export const uploadPdfApi =(data,{headers}) =>{
+    console.log(data,headers,"in service")
+    return axios.post('/upload-pdf',data,{headers})
 }
